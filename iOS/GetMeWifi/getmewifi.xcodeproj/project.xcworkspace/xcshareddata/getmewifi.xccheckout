@@ -14,7 +14,7 @@
 		<string>https://bitbucket.org/vishnubhatt/getmewifi.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>iOS/getmewifi/getmewifi.xcodeproj</string>
+	<string>iOS/GetMeWifi/getmewifi.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>A95FC3496E65D87F0E3FCFBAF3BA4AC25A765220</key>
