@@ -1,0 +1,16 @@
+INSTUPhelloworld
+/Users/pvishnubhatt/Documents/getmewifi/workspace/getmewifinow/helloworld.py
+INFOS:&&3|1|2|0&&3|3|2|0&&3|4|2|0&&1|5|2|0&&2|6|2|5&&1|7|2|0&&2|8|2|7&&1|9|2|0&&2|10|2|9&&3|11|2|12&&3|13|2|0
+helloworld=2
+MainPage=7
+app=13
+detect=6
+post=10
+get=8
+MAIN_PAGE_HTML=1
+WiFiSigner=9
+WiFiSigner.post=12
+message=11
+TIME_OUT_FUNCTION=4
+DetectPhone=5
+MAIN_PAGE_HTML_BACK=3

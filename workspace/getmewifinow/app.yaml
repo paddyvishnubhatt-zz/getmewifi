@@ -1,0 +1,13 @@
+application: getmewifinow
+runtime: python27
+version: 1
+api_version: 1
+threadsafe: true
+
+handlers:
+- url: /.*
+  script: helloworld.app
+
+libraries:
+- name: webapp2
+  version: "2.5.2"
