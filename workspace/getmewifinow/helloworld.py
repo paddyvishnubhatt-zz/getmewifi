@@ -3,44 +3,18 @@ import cgi
 from google.appengine.api import users
 import Cookie
 
-MAIN_PAGE_HTML = """\
-<html>
-  <title>Get me WIFI NOW!</title>
-  <body>
-    <p>Hi there! Welcome to XXXX, pls type the message given to you</p>
-    <form action="/login" method="post">
-      <div><textarea name="content" rows="3" cols="60"></textarea></div>
-      <div><input type="submit" value="Sign in to get Free WIFI Now"></div>
-    </form>
-  </body>
-</html>
-"""
-
-MAIN_PAGE_HTML_BACK = """\
-<html>
-  <title>Get me WIFI NOW!</title>
-  <body>
-    <p>Hi there! Welcome back to XXXX, Pls type in the message given to you</p>
-    <form action="/login" method="post">
-      <div><textarea name="content" rows="3" cols="60"></textarea></div>
-      <div><input type="submit" value="Get me Free WIFI Now"></div>
-    </form>
-  </body>
-</html>
-"""
-
 TIME_OUT_FUNCTION = """\
 <script type="text/javascript">
        
     function launchiOSApp()  {
         console.log("*********** here **************");
-        window.location = "wifi://com.knuggetlabs.patient";
-        window.setTimeout(function (){ window.location.replace('itms://phobos.apple.com'); }, 1);
+        window.location = "wifi://com.vishnubhatt.getmewifi";
+        window.setTimeout(function (){ window.location.replace('itms://phobos.apple.com'); }, 10);
     }
     
     function launchAndroidApp()  {
         console.log("*********** here **************");
-        window.location = "wifi://com.knuggetlabs.patient";
+        window.location = "wifi://com.vishnubhatt.getmewifi";
         window.setTimeout(function (){ window.location.replace('http://play.google.com'); }, 1);
     }
 </script>
@@ -61,57 +35,74 @@ class DetectPhone(object):
             return "android"
 
         return "Unknown"
-        
+
 class MainPage(webapp2.RequestHandler):
-    
-    def get(self):
+
+    def run(self):
         cookie = self.request.cookies.get('getmewifinow')
+        phoneType = DetectPhone().detect(self.request)
         print 'Cookie: ' + str(cookie)
         if (cookie is None) :
-            self.response.write(MAIN_PAGE_HTML)
+            #self.response.write(MAIN_PAGE_HTML)
+            print("First time")
             self.response.set_cookie('getmewifinow', 'some_value')
         else :
-            self.response.write(MAIN_PAGE_HTML_BACK)
-    
-class WiFiSigner(webapp2.RequestHandler):
+            #self.response.write(MAIN_PAGE_HTML_BACK)
+            print ("Returning again")
+            
+        self.runApp(phoneType)     
+        
+    def get(self):
+        self.run()
     
     def post(self):
-        phoneType = DetectPhone().detect(self.request)
-        
-        self.message = "worldbest"
-        if (self.message == self.request.get('content')) :
-            self.response.write('<html><title>Welcome to XXXX, Enjoy your Free WIFI NOW!</title>\n<body>\n')
-            self.response.write(TIME_OUT_FUNCTION)
-            self.response.write('<p>Detecting phone: ' + phoneType + '</p>')
-            self.response.write('\n<p>Detecting if app is installed - next</p>')
+        self.run()
             
-            if (phoneType == 'android') :
-                self.response.write('\n<p>Detecting if app is installed in android - next</p>')
-                self.response.write('<p>\nLaunching wifi://knuggetlabs</p>')
-                #self.response.write('<meta http-equiv="refresh" content="2; url=wifi://" />')
-                self.response.write('<script type="text/javascript">setTimeout(launchAndroidApp, 2000);</script>')
-                
-            elif (phoneType == 'iPhone') :
-                self.response.write('<p>\nDetecting if app is installed in iPhone - next</p>')
-                self.response.write('<p>\nLaunching wifi://knuggetlabs</p>')
-                #self.response.write('<meta http-equiv="refresh" content="2; url=wifi://" />')
-                self.response.write('<script type="text/javascript">setTimeout(launchiOSApp, 2000);</script>')
-                
-            elif (phoneType == 'iPad') :
-                self.response.write('\n<p>Detecting if app is installed in iPad - next</p>')
-
-            else :
-                self.response.write('\n<p>Need to handle</p>')
-                self.response.write('<script type="text/javascript">setTimeout(launchAndroidApp, 2000);</script>')
-            
-            self.response.write('</body></html>')
-
-        else:
-            self.response.write('<html><body>You wrote:<pre>')
-            self.response.write(cgi.escape(self.request.get('content')))
-            self.response.write('</pre> which does not match the message of the day, pls check again</body></html>')
-        
+    def lookup(self, ssid):
+        retVal = True
+        if (ssid == "vishnubhatt") :
+            retVal = False
+        if (ssid == "vishnubhatt_guest") :
+            retVal = False
+        return retVal
     
+    def okayToGo(self, ssid, phoneType):
+        self.response.write('<html><title>Welcome to XXXX, Enjoy your Free WIFI NOW! from ' + ssid + '</title>\n<body>\n')
+        self.response.write(TIME_OUT_FUNCTION)
+        self.response.write('<p>Detecting phone: ' + phoneType + '</p>')
+        self.response.write('\n<p>Detecting if app is installed - next</p>')
+        if (phoneType == 'android') :
+            self.response.write('\n<p>Detecting if app is installed in android - next: ' + ssid + '</p>')
+            self.response.write('<p>\nLaunching wifi://getmewifi</p>')
+            #self.response.write('<meta http-equiv="refresh" content="2; url=wifi://" />')
+            self.response.write('<script type="text/javascript">setTimeout(launchAndroidApp, 2000);</script>')
+            
+        elif (phoneType == 'iPhone') :
+            self.response.write('<p>\nDetecting if app is installed in iPhone - next: ' + ssid + '</p>')
+            self.response.write('<p>\nLaunching wifi://getmewifi</p>')
+            #self.response.write('<meta http-equiv="refresh" content="2; url=wifi://" />')
+            self.response.write('<script type="text/javascript">setTimeout(launchiOSApp, 2000);</script>')
+            
+        elif (phoneType == 'iPad') :
+            self.response.write('\n<p>Detecting if app is installed in iPad - next</p>')
+    
+        else :
+            self.response.write('\n<p>Need to handle</p>')
+            self.response.write('<script type="text/javascript">setTimeout(launchAndroidApp, 2000);</script>')
+        
+        self.response.write('</body></html>')
+    
+    def denyToGo(self):
+        self.abort(401)
+        
+    def runApp(self, phoneType):
+        wifiSSId = self.request.get('content')
+        print("wifiSSId: " + wifiSSId)
+        if (self.lookup(wifiSSId)) :
+            self.okayToGo(wifiSSId, phoneType)
+        else :
+            self.denyToGo()
+   
 app = webapp2.WSGIApplication([
-            ('/', MainPage),
-            ('/login', WiFiSigner)], debug=True)
+    ('/', MainPage)], debug=True)
+        
