@@ -62,8 +62,6 @@ class MainPage(webapp2.RequestHandler):
         retVal = True
         if (ssid == "vishnubhatt") :
             retVal = False
-        if (ssid == "vishnubhatt_guest") :
-            retVal = False
         return retVal
     
     def okayToGo(self, ssid, phoneType):
